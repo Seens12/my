@@ -25,7 +25,17 @@ Only include these when they add genuine value. Most ADRs won't need them.
 
 ## Numbering
 
-Scan `docs/adr/` for the highest existing number and increment by one.
+Scan `docs/adr/` for the highest existing number and increment by one. In a multi-context repo, this is scoped per folder — see "Multi-context repos" below.
+
+## Cross-check before writing
+
+Before creating a new ADR, re-read every existing ADR (don't rely on memory). If the new decision contradicts, supersedes, or partially overlaps an existing one:
+
+- **Contradicts**: stop. Surface the conflict to the user — do not write a contradictory ADR. Either revise the new decision, or mark the old one as `superseded by ADR-NNNN` in the same session.
+- **Supersedes**: write the new ADR and update the old one's status to `superseded by ADR-NNNN` in the same change set. Don't leave the old one claiming authority.
+- **Overlaps partially**: reference the existing ADR explicitly in the new one — "extends ADR-NNNN for the case of X" — so a future reader finds both.
+
+Skipping this check is the most common way ADRs drift out of sync. A 30-second grep is cheap; a contradiction discovered during an incident is not.
 
 ## When to offer an ADR
 
@@ -49,3 +59,14 @@ Additionally: if a safer but more complex implementation was chosen over a simpl
 * **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
 * **Rejected alternatives when the rejection is non-obvious.** If you considered GraphQL and picked REST for subtle reasons, record it — otherwise someone will suggest GraphQL again in six months.
 * **Conservative choices made for safety.** If a simpler implementation was available but rejected because it was harder to reason about, less auditable, or more likely to fail silently — record it. Future readers will see complexity and try to remove it; the ADR explains why that complexity is load-bearing.
+
+## Multi-context repos
+
+When the repo has multiple contexts (see CONTEXT-FORMAT.md), a context may keep its own `docs/adr/` next to its `CONTEXT.md`. Each folder's numbering is independent — `src/billing/docs/adr/0001-...md` and the root `docs/adr/0001-...md` are not the same sequence and don't collide.
+
+Where a decision goes depends on its blast radius, not on which file happened to prompt it:
+
+- **Affects one context only** (an internal implementation choice inside Billing) → that context's `docs/adr/`.
+- **Affects how contexts interact, or the system as a whole** (message bus choice, a new event contract between Ordering and Billing, a deployment target) → the root `docs/adr/`.
+
+When unsure which applies, ask: does this decision constrain choices inside one context, or does it shape what's shared or how contexts talk to each other? The former is context-local; the latter is root-level.

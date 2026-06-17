@@ -52,6 +52,20 @@ _Avoid_: Client, buyer, account
 * **Write an example dialogue.** A conversation between a dev and a domain expert that demonstrates how the terms interact naturally and clarifies boundaries between related concepts.
 * **Record every change in `## Changelog`.** When a definition is added, updated, or overridden, log the date and reason. Do not silently overwrite previous definitions — the history of why a term changed is as valuable as the current definition. Format: `- {date}: {what changed and why}`.
 
+## Term ↔ code consistency
+
+The glossary is only useful if the code follows it. When editing or reviewing code in this context, the canonical term and its "Avoid" aliases have a specific relationship to the codebase:
+
+* **Canonical term** — should appear in identifiers, log messages, error messages, and user-facing copy for the concept it names.
+* **"Avoid" aliases** — should NOT appear as identifiers for the same concept. They may appear in:
+  - legacy code that pre-dates the glossary (flag and rename when touched)
+  - external interfaces (API contracts, DB columns) that can't be changed cheaply — call these out explicitly in the term's entry, e.g. `_Avoid_: account (except in `auth.User` legacy column)`
+  - free-form text where the meaning is genuinely different
+
+If a term is defined here but grepping the codebase finds no occurrences, the term is either too abstract to be load-bearing or it's missing from the code — surface it during Phase 5's term↔code check, and let the user decide: drop the term, or add it where it should be used.
+
+If code uses a word that isn't in the glossary, that word is a candidate term — surface it during the same check. Either add it to the glossary, or rename the code.
+
 ## Single vs multi-context repos
 
 **Single context (most repos):** One `CONTEXT.md` at the repo root.
@@ -81,3 +95,5 @@ The skill infers which structure applies:
 * If neither exists, create a root `CONTEXT.md` lazily when the first term is resolved
 
 When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
+
+**Cross-context term hygiene:** if the same word is defined differently in two `CONTEXT.md` files, that's a load-bearing conflict — it usually means the contexts haven't agreed on the shared type. Surface it during the term↔code check; do not silently pick one.
