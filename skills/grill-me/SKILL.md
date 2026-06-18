@@ -1,5 +1,5 @@
 ---
-name: grill-with-docs
+name: grill-me
 description: Full-cycle session that stress-tests a plan against the existing domain model and codebase, sharpens terminology, implements the agreed decisions, updates documentation (CONTEXT.md, ADRs) inline, then verifies the result with codebase QA, browser QA, a scoped security review, and a final codebase re-verification before reporting back. Use when the user wants to stress-test a plan against their project's language and documented decisions and then actually ship and verify the result, not just produce a plan.
 disable-model-invocation: true
 ---
