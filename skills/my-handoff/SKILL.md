@@ -1,5 +1,5 @@
 ---
-name: full-handoff
+name: my-handoff
 description: Produce a complete, zero-omission handoff document from the current session — context, decisions, rules, links, credentials, skills used, and next steps — and sync the local repo to GitHub 1:1, so a fresh session/agent can resume with full continuity.
 argument-hint: What will the next session focus on? (optional)
 ---
